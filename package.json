@@ -1,0 +1,29 @@
+{
+  "name": "Channelicon",
+  "version": "0.1.0",
+  "description": "A browser extension for Slack",
+  "main": "index.js",
+  "author": "tomoki1207",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "run-p watch:*",
+    "watch:js": "webpack - w",
+    "watch:ff": "web-ext run -s .build/",
+    "build": "run-s build:js build:ff",
+    "build:js": "NODE_ENV=production webpack",
+    "build:ff": "web-ext build -s .build/"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "babel-loader": "^8.0.5",
+    "copy-webpack-plugin": "^5.0.2",
+    "eslint": "^5.16.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.17.0",
+    "web-ext": "^3.0.0",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.0"
+  }
+}

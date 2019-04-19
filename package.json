@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "dev": "run-p watch:*",
-    "watch:js": "webpack - w",
+    "watch:js": "webpack -w",
     "watch:ff": "web-ext run -s .build/",
     "build": "run-s build:js build:ff",
     "build:js": "NODE_ENV=production webpack",

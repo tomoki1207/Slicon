@@ -40,6 +40,8 @@
   "permissions": [
     "https://*.slack.com/*",
     "webRequest",
-    "webRequestBlocking"
+    "webRequestBlocking",
+    "activeTab",
+    "tabs"
   ]
 }

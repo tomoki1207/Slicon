@@ -7,21 +7,35 @@ const generateDefaultIconSrc = channel => {
   const sha = createHash('sha1')
   sha.update(channel.name)
   const hash = sha.digest('hex')
-  const iconData = new Identicon(hash, { size: 20, margin: 0.1, format: 'svg' })
+  const iconData = new Identicon(hash, { size: 21, format: 'svg' })
   return `data:image/svg+xml;base64,${iconData.toString()}`
 }
 
 const replaceIconCss = channel => {
   const id = channel.id
   if (insertedCss[id]) {
-    browser.tabs.removeCSS({ code: prev })
+    browser.tabs.removeCSS({ code: insertedCss[id] })
   }
   const css = `
   div#col_channels a.c-link.p-channel_sidebar__channel[href$="${id}"] > span:before {
     background: url(${generateDefaultIconSrc(channel)}) no-repeat center center;
-    padding: 10px;
-    margin-right: 5px;
-    content: ""
+    background-size: contain;
+    animation: none;
+  }`
+  browser.tabs.insertCSS({ code: css })
+  insertedCss[id] = css
+}
+
+const replaceAvatorCss = (ims, user) => {
+  const id = user.id
+  if (insertedCss[id]) {
+    browser.tabs.removeCSS({ code: insertedCss[id] })
+  }
+  const css = `
+  div#col_channels a.c-link.p-channel_sidebar__channel[href$="${ims.id}"] > span:before {
+    background: url(${user.profile.image_24}) no-repeat center center;
+    background-size: contain;
+    animation: none;
   }`
   browser.tabs.insertCSS({ code: css })
   insertedCss[id] = css
@@ -80,6 +94,25 @@ const fetchGroup = async (group, origin, token) => {
   replaceIconCss(body.group)
 }
 
+const fetchProfile = async (ims, origin, token) => {
+  const param = {
+    token,
+    channel: ims.id
+  }
+  const url = `${origin}/api/conversations.info`
+  const response = await requestAsFormData(url, param)
+  const body = await response.json()
+
+  const userUrl = `${origin}/api/users.info`
+  const userParam = {
+    token,
+    user: body.channel.user
+  }
+  const res = await requestAsFormData(userUrl, userParam)
+  const json = await res.json()
+  replaceAvatorCss(ims, json.user)
+}
+
 const listener = detail => {
   const filter = browser.webRequest.filterResponseData(detail.requestId)
   const decoder = new TextDecoder('utf-8')
@@ -97,17 +130,16 @@ const listener = detail => {
   filter.onstop = event => {
     filter.disconnect()
     const body = JSON.parse(buffer)
+    const serialFetch = (props, fetchProc) => {
+      if (props) {
+        return serial(props.map(prop => async () => fetchProc(prop, requestUrl.origin, token)))
+      }
+      return Promise.resolve()
+    }
     Promise.all([
-      serial(
-        body.channels.map(channel => async () =>
-          fetchChannel(channel, requestUrl.origin, token)
-        )
-      ),
-      serial(
-        body.groups.map(group => async () =>
-          fetchGroup(group, requestUrl.origin, token)
-        )
-      )
+      serialFetch(body.channels, fetchChannel),
+      serialFetch(body.groups, fetchGroup),
+      serialFetch(body.ims, fetchProfile)
     ])
   }
 }
@@ -116,7 +148,7 @@ const listener = detail => {
 browser.webRequest.onBeforeRequest.addListener(
   listener,
   {
-    urls: ['https://*.slack.com/api/users.counts*']
+    urls: ['https://*.slack.com/api/client.counts*']
   },
   ['blocking', 'requestBody']
 )

@@ -32,6 +32,9 @@
     "js": [
       "content_script.js"
     ],
+    "css": [
+      "main.css"
+    ],
     "run_at": "document_start"
   }],
   "background": {

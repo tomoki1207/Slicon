@@ -1,0 +1,22 @@
+div#col_channels a.c-link.p-channel_sidebar__channel > span:before {
+  background: #f6f7f8 no-repeat center center;
+  background: linear-gradient(to right, #eee 8%, #ddd 18%, #eee 55%);
+  padding: 0 8px 0 8px;
+  margin-right: 5px;
+  content: '';
+
+  animation-duration: 3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderAnimation;
+  animation-timing-function: linear;
+}
+
+@keyframes placeHolderAnimation {
+  0% {
+    background-position: -40px 0;
+  }
+  100% {
+    background-position: 40px 0;
+  }
+}

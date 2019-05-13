@@ -1,9 +1,10 @@
 import { createHash } from 'crypto'
 import Identicon from 'identicon.js'
 
+import { get, set } from './storage'
+
 // icon format: __icon[https://your.icon.host/someimage.png]
 const iconRegex = /^__icon\[<(.+)>\]$/
-const insertedCss = {}
 
 // show identicon if icon isn't set
 const generateDefaultIconUrl = channel => {
@@ -26,10 +27,11 @@ const findIconUrl = channel => {
   return null
 }
 
-export const replaceIconCss = ({ channel }) => {
+export const replaceIconCss = async ({ channel }) => {
   const id = channel.id
-  if (insertedCss[id]) {
-    browser.tabs.removeCSS({ code: insertedCss[id] })
+  const prev = await get(id)
+  if (prev) {
+    browser.tabs.removeCSS({ code: prev })
   }
   const iconUrl = findIconUrl(channel) || generateDefaultIconUrl(channel)
   const css = `
@@ -39,28 +41,30 @@ export const replaceIconCss = ({ channel }) => {
       animation: none;
     }`
   browser.tabs.insertCSS({ code: css })
-  insertedCss[id] = css
+  set(id, css)
 }
 
-export const replaceAvatorCss = ({ ims, user }) => {
+export const replaceAvatorCss = async ({ ims, user }) => {
   const id = user.id
-  if (insertedCss[id]) {
-    browser.tabs.removeCSS({ code: insertedCss[id] })
+  const prev = await get(id)
+  if (prev) {
+    browser.tabs.removeCSS({ code: prev })
   }
   const css = `
-  div#col_channels a.c-link.p-channel_sidebar__channel[href$="${ims.id}"] > span:before {
-    background: url(${user.profile.image_24}) no-repeat center center;
-    background-size: contain;
-    animation: none;
-  }`
+    div#col_channels a.c-link.p-channel_sidebar__channel[href$="${ims.id}"] > span:before {
+      background: url(${user.profile.image_24}) no-repeat center center;
+      background-size: contain;
+      animation: none;
+    }`
   browser.tabs.insertCSS({ code: css })
-  insertedCss[id] = css
+  set(id, css)
 }
 
-export const replaceMultiMessageIconCss = ({ mpims }) => {
+export const replaceMultiMessageIconCss = async ({ mpims }) => {
   const id = mpims.id
-  if (insertedCss[id]) {
-    browser.tabs.removeCSS({ code: insertedCss[id] })
+  const prev = await get(id)
+  if (prev) {
+    browser.tabs.removeCSS({ code: prev })
   }
   const css = `
     div#col_channels a.c-link.p-channel_sidebar__channel[href$="${id}"] > span:before {
@@ -69,5 +73,13 @@ export const replaceMultiMessageIconCss = ({ mpims }) => {
       animation: none;
     }`
   browser.tabs.insertCSS({ code: css })
-  insertedCss[id] = css
+  set(id, css)
+}
+
+export const restoreCss = async () => {
+  const wholeCss = await get()
+  if (wholeCss) {
+    console.log('whole: ', Object.values(wholeCss).join('\n'))
+    browser.tabs.insertCSS({ code: Object.values(wholeCss).join('\n') })
+  }
 }

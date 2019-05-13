@@ -1,6 +1,6 @@
 import { serial } from './util'
 import { fetchChannel, fetchGroup, fetchProfile } from './slack'
-import { replaceIconCss, replaceAvatorCss } from './icon'
+import { replaceIconCss, replaceAvatorCss, replaceMultiMessageIconCss } from './icon'
 
 const listener = detail => {
   const filter = browser.webRequest.filterResponseData(detail.requestId)
@@ -33,7 +33,8 @@ const listener = detail => {
     Promise.all([
       serialFetch(body.channels, fetchChannel, replaceIconCss),
       serialFetch(body.groups, fetchGroup, replaceIconCss),
-      serialFetch(body.ims, fetchProfile, replaceAvatorCss)
+      serialFetch(body.ims, fetchProfile, replaceAvatorCss),
+      serialFetch(body.mpims, (mpims, _, __) => Promise.resolve({ mpims }), replaceMultiMessageIconCss)
     ])
   }
 }
@@ -42,7 +43,7 @@ const listener = detail => {
 browser.webRequest.onBeforeRequest.addListener(
   listener,
   {
-    urls: ['https://*.slack.com/api/client.counts*']
+    urls: ['https://*.slack.com/api/client.counts*', 'https://*.slack.com/api/users.counts*']
   },
   ['blocking', 'requestBody']
 )

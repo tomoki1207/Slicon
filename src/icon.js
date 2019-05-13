@@ -56,3 +56,18 @@ export const replaceAvatorCss = ({ ims, user }) => {
   browser.tabs.insertCSS({ code: css })
   insertedCss[id] = css
 }
+
+export const replaceMultiMessageIconCss = ({ mpims }) => {
+  const id = mpims.id
+  if (insertedCss[id]) {
+    browser.tabs.removeCSS({ code: insertedCss[id] })
+  }
+  const css = `
+    div#col_channels a.c-link.p-channel_sidebar__channel[href$="${id}"] > span:before {
+      background: url(${generateDefaultIconUrl(mpims)}) no-repeat center center;
+      background-size: contain;
+      animation: none;
+    }`
+  browser.tabs.insertCSS({ code: css })
+  insertedCss[id] = css
+}

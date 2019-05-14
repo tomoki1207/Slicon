@@ -17,13 +17,5 @@ const waitForReady = selector =>
     })
   })
 
-waitForReady('div.p-channel_sidebar__static_list').then(target =>
-  new MutationObserver(records => {
-    console.log('call', records)
-    // request restore icons
-    browser.runtime.sendMessage({ action: 'restore' })
-  }).observe(target, {
-    childList: true,
-    subtree: true
-  })
-)
+// request restore once when appear channel sidebar
+waitForReady('div.p-channel_sidebar__static_list').then(target => browser.runtime.sendMessage({ action: 'restore' }))

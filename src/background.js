@@ -7,7 +7,7 @@ const listen = (detail, callback) => {
   const filter = browser.webRequest.filterResponseData(detail.requestId)
   const decoder = new TextDecoder('utf-8')
   const url = new URL(detail.url)
-  const token = detail.requestBody.formData.token
+  const data = detail.requestBody.formData
 
   let buffer = ''
   filter.ondata = event => {
@@ -20,17 +20,17 @@ const listen = (detail, callback) => {
   filter.onstop = event => {
     filter.disconnect()
     const body = JSON.parse(buffer)
-    callback({ url, token, body })
+    callback({ url, data, body })
   }
 }
 
 const initializeAllChannels = detail => {
-  listen(detail, ({ url, token, body }) => {
+  listen(detail, ({ url, data, body }) => {
     const serialFetch = (props, fetchProc, callback) => {
       if (props) {
         return serial(
           props.map(prop => async () => {
-            const result = await fetchProc(prop, url.origin, token)
+            const result = await fetchProc(prop, url.origin, data.token)
             callback(result)
           })
         )
@@ -46,9 +46,16 @@ const initializeAllChannels = detail => {
   })
 }
 
-const updateChannel = async detail => {
+const updateChannelPurpose = detail => {
   listen(detail, ({ body }) => {
     replaceIconCss({ channel: body.channel })
+  })
+}
+
+const updateChannel = detail => {
+  listen(detail, async ({ url, data }) => {
+    const channel = await fetchChannel({ id: data.channel }, url.origin, data.token)
+    replaceIconCss(channel)
   })
 }
 
@@ -62,9 +69,17 @@ browser.webRequest.onBeforeRequest.addListener(
 )
 // update icon when set purpose immediately
 browser.webRequest.onBeforeRequest.addListener(
-  updateChannel,
+  updateChannelPurpose,
   {
     urls: ['https://*.slack.com/api/conversations.setPurpose*']
+  },
+  ['blocking', 'requestBody']
+)
+// update icon when show/preview channel
+browser.webRequest.onBeforeRequest.addListener(
+  updateChannel,
+  {
+    urls: ['https://*.slack.com/api/conversations.history*']
   },
   ['blocking', 'requestBody']
 )

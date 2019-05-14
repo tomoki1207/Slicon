@@ -79,7 +79,9 @@ export const replaceMultiMessageIconCss = async ({ mpims }) => {
 export const restoreCss = async () => {
   const wholeCss = await get()
   if (wholeCss) {
-    console.log('whole: ', Object.values(wholeCss).join('\n'))
-    browser.tabs.insertCSS({ code: Object.values(wholeCss).join('\n') })
+    // insert one by one for enable to removeCss()
+    for (const css of Object.values(wholeCss)) {
+      browser.tabs.insertCSS({ code: css })
+    }
   }
 }

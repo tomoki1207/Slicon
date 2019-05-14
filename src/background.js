@@ -2,10 +2,11 @@ import { serial } from './util'
 import { fetchChannel, fetchGroup, fetchProfile } from './slack'
 import { restoreCss, replaceIconCss, replaceAvatorCss, replaceMultiMessageIconCss } from './icon'
 
-const listener = detail => {
+// listen onBeforeRequest
+const listen = (detail, callback) => {
   const filter = browser.webRequest.filterResponseData(detail.requestId)
   const decoder = new TextDecoder('utf-8')
-  const requestUrl = new URL(detail.url)
+  const url = new URL(detail.url)
   const token = detail.requestBody.formData.token
 
   let buffer = ''
@@ -19,11 +20,17 @@ const listener = detail => {
   filter.onstop = event => {
     filter.disconnect()
     const body = JSON.parse(buffer)
+    callback({ url, token, body })
+  }
+}
+
+const initializeAllChannels = detail => {
+  listen(detail, ({ url, token, body }) => {
     const serialFetch = (props, fetchProc, callback) => {
       if (props) {
         return serial(
           props.map(prop => async () => {
-            const result = await fetchProc(prop, requestUrl.origin, token)
+            const result = await fetchProc(prop, url.origin, token)
             callback(result)
           })
         )
@@ -36,14 +43,28 @@ const listener = detail => {
       serialFetch(body.ims, fetchProfile, replaceAvatorCss),
       serialFetch(body.mpims, (mpims, _, __) => Promise.resolve({ mpims }), replaceMultiMessageIconCss)
     ])
-  }
+  })
+}
+
+const updateChannel = async detail => {
+  listen(detail, ({ body }) => {
+    replaceIconCss({ channel: body.channel })
+  })
 }
 
 // peek request contains channels list
 browser.webRequest.onBeforeRequest.addListener(
-  listener,
+  initializeAllChannels,
   {
     urls: ['https://*.slack.com/api/client.counts*', 'https://*.slack.com/api/users.counts*']
+  },
+  ['blocking', 'requestBody']
+)
+// update icon when set purpose immediately
+browser.webRequest.onBeforeRequest.addListener(
+  updateChannel,
+  {
+    urls: ['https://*.slack.com/api/conversations.setPurpose*']
   },
   ['blocking', 'requestBody']
 )

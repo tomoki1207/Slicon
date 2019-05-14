@@ -1,6 +1,6 @@
 import { serial } from './util'
 import { fetchChannel, fetchGroup, fetchProfile } from './slack'
-import { replaceIconCss, replaceAvatorCss, replaceMultiMessageIconCss } from './icon'
+import { restoreCss, replaceIconCss, replaceAvatorCss, replaceMultiMessageIconCss } from './icon'
 
 const listener = detail => {
   const filter = browser.webRequest.filterResponseData(detail.requestId)
@@ -47,3 +47,10 @@ browser.webRequest.onBeforeRequest.addListener(
   },
   ['blocking', 'requestBody']
 )
+
+browser.runtime.onMessage.addListener(async msg => {
+  // initialize css on receive message from content_script
+  if (msg.action === 'restore') {
+    await restoreCss()
+  }
+})

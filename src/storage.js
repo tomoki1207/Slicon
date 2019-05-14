@@ -2,11 +2,9 @@
  * handy storage access
  */
 
-const empty = obj => !obj || Object.keys(obj).length <= 0
-
 export const get = async key => {
   const val = await browser.storage.local.get(key)
-  return empty(val) ? null : val[key]
+  return key ? val[key] : val
 }
 
 export const set = async (key, value) => {

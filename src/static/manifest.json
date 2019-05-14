@@ -45,6 +45,8 @@
     "webRequest",
     "webRequestBlocking",
     "activeTab",
-    "tabs"
+    "tabs",
+    "storage",
+    "notifications"
   ]
 }

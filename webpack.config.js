@@ -1,5 +1,11 @@
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+
+const plugins = [new CopyWebpackPlugin([{ from: 'src/static', to: '.' }])]
+if (process.env.NODE_ENV === 'production') {
+  plugins.push(new CleanWebpackPlugin())
+}
 
 module.exports = {
   mode: process.env.NODE_ENV || 'development',
@@ -34,7 +40,6 @@ module.exports = {
   resolve: {
     extensions: ['.js']
   },
-  plugins: [new CopyWebpackPlugin([{ from: 'src/static', to: '.' }])],
-  devtool:
-    process.env.NODE_ENV === 'production' ? false : 'cheap-module-source-map'
+  plugins,
+  devtool: process.env.NODE_ENV === 'production' ? false : 'cheap-module-source-map'
 }

@@ -7,17 +7,19 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "predev": "webpack",
     "dev": "run-p watch:*",
     "watch:js": "webpack -w",
     "watch:ff": "web-ext run -s .build/",
     "build": "run-s build:js build:ff",
     "build:js": "NODE_ENV=production webpack",
-    "build:ff": "web-ext build -s .build/"
+    "build:ff": "web-ext build -s .build/ --overwrite-dest"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "babel-loader": "^8.0.5",
+    "clean-webpack-plugin": "^2.0.2",
     "copy-webpack-plugin": "^5.0.2",
     "eslint": "^5.16.0",
     "npm-run-all": "^4.1.5",

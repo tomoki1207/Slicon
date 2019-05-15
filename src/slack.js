@@ -34,21 +34,29 @@ export const fetchGroup = async (group, origin, token) => {
   return { channel: json.group }
 }
 
-export const fetchProfile = async (ims, origin, token) => {
+export const fetchConversation = async (channel, origin, token) => {
   const param = {
     token,
-    channel: ims.id
+    channel: channel.id
   }
   const url = `${origin}/api/conversations.info`
   const response = await requestAsFormData(url, param)
-  const body = await response.json()
+  const json = await response.json()
+  return { channel: json.channel }
+}
 
-  const userUrl = `${origin}/api/users.info`
-  const userParam = {
+export const fetchProfile = async (im, origin, token) => {
+  const url = `${origin}/api/users.info`
+  const param = {
     token,
-    user: body.channel.user
+    user: im.user
   }
-  const res = await requestAsFormData(userUrl, userParam)
+  const res = await requestAsFormData(url, param)
   const json = await res.json()
-  return { ims, user: json.user }
+  return { ims: im, user: json.user }
+}
+
+export const fetchProfileAsConversation = async (ims, origin, token) => {
+  const im = await fetchConversation(ims, origin, token)
+  return fetchProfile(im.channel, origin, token)
 }

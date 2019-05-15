@@ -1,4 +1,4 @@
-div#col_channels a.c-link.p-channel_sidebar__channel[href*='/messages/'] > span:before {
+div#col_channels a.c-link.p-channel_sidebar__channel[href*='/messages/'] > span.p-channel_sidebar__name:before {
   background: #f6f7f8 no-repeat center center;
   background: linear-gradient(to right, #eee 8%, #ddd 18%, #eee 55%);
   padding: 0 8px 0 8px;

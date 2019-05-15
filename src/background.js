@@ -1,5 +1,5 @@
 import { serial } from './util'
-import { fetchChannel, fetchGroup, fetchProfile } from './slack'
+import { fetchChannel, fetchGroup, fetchConversation, fetchProfileAsConversation, fetchProfile } from './slack'
 import { restoreCss, replaceIconCss, replaceAvatorCss, replaceMultiMessageIconCss } from './icon'
 
 // listen onBeforeRequest
@@ -40,7 +40,7 @@ const initializeAllChannels = detail => {
     Promise.all([
       serialFetch(body.channels, fetchChannel, replaceIconCss),
       serialFetch(body.groups, fetchGroup, replaceIconCss),
-      serialFetch(body.ims, fetchProfile, replaceAvatorCss),
+      serialFetch(body.ims, fetchProfileAsConversation, replaceAvatorCss),
       serialFetch(body.mpims, (mpims, _, __) => Promise.resolve({ mpims }), replaceMultiMessageIconCss)
     ])
   })
@@ -54,8 +54,15 @@ const updateChannelPurpose = detail => {
 
 const updateChannel = detail => {
   listen(detail, async ({ url, data }) => {
-    const channel = await fetchChannel({ id: data.channel }, url.origin, data.token)
-    replaceIconCss(channel)
+    const origin = url.origin
+    const token = data.token
+    const { channel } = await fetchConversation({ id: data.channel }, origin, token)
+    if (!channel.is_im) {
+      replaceIconCss({ channel })
+      return
+    }
+    const profile = await fetchProfile(channel, origin, token)
+    replaceAvatorCss(profile)
   })
 }
 

@@ -3,6 +3,8 @@ Channelicon
 
 Better your slack channel.
 
+![screenshot](https://user-images.githubusercontent.com/3643499/57746264-6be49980-770b-11e9-886c-bee8ca342f9a.png)
+
 ### Channel icon
 
 #### Channel

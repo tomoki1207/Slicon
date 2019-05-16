@@ -13,7 +13,6 @@ module.exports = {
   target: 'web',
   node: false,
   entry: {
-    options: './src/options.js',
     content_script: './src/content_script.js',
     background: './src/background.js'
   },

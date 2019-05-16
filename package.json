@@ -1,6 +1,6 @@
 {
   "name": "Slicon",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A browser extension for Slack",
   "main": "index.js",
   "author": "tomoki1207",

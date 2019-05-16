@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Channelicon - personalize your Slack channel",
+  "name": "Slicon",
   "description": "Set icon to your slack channel, and make more accessible for your favorite channel!",
   "version": "0.1.0",
   "options_ui": {
@@ -15,15 +15,15 @@
   "page_action": {
     "default_popup": "options.html",
     "default_icon": {
-      "128": "images/icon128.png",
-      "48": "images/icon48.png",
-      "16": "images/icon16.png"
+      "128": "icon.svg",
+      "48": "icon.svg",
+      "16": "icon.svg"
     }
   },
   "icons": {
-    "128": "images/icon128.png",
-    "48": "images/icon48.png",
-    "16": "images/icon16.png"
+    "128": "icon.svg",
+    "48": "icon.svg",
+    "16": "icon.svg"
   },
   "content_scripts": [{
     "matches": [

@@ -1,4 +1,4 @@
-import { createHash } from 'crypto'
+import md5 from 'blueimp-md5'
 import Identicon from 'identicon.js'
 
 import { get, set } from './storage'
@@ -8,9 +8,7 @@ const iconRegex = /^__icon\[<(.+)>\]$/
 
 // show identicon if icon isn't set
 const generateDefaultIconUrl = channel => {
-  const sha = createHash('sha1')
-  sha.update(channel.name)
-  const hash = sha.digest('hex')
+  const hash = md5(channel.name)
   const iconData = new Identicon(hash, { size: 21, format: 'svg' })
   return `data:image/svg+xml;base64,${iconData.toString()}`
 }

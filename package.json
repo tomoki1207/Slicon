@@ -29,6 +29,7 @@
     "webpack-cli": "^3.3.0"
   },
   "dependencies": {
+    "blueimp-md5": "^2.10.0",
     "identicon.js": "^2.3.3"
   }
 }

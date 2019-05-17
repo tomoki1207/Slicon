@@ -1,9 +1,6 @@
-const path = require('path')
-const webpack = require('webpack')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
-const plugins = [new CopyWebpackPlugin([{ from: 'src/static', to: '.' }])]
+const plugins = []
 if (process.env.NODE_ENV === 'production') {
   plugins.push(new CleanWebpackPlugin())
 }
@@ -15,9 +12,6 @@ module.exports = {
   entry: {
     content_script: './src/content_script.js',
     background: './src/background.js'
-  },
-  output: {
-    path: path.resolve(__dirname, '.build')
   },
   module: {
     rules: [

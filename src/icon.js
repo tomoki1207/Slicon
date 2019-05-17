@@ -29,7 +29,7 @@ export const replaceIconCss = async ({ channel }) => {
   const id = channel.id
   const prev = await get(id)
   if (prev) {
-    browser.tabs.removeCSS({ code: prev })
+    chrome.tabs.removeCSS({ code: prev })
   }
   const iconUrl = findIconUrl(channel) || generateDefaultIconUrl(channel)
   const css = `
@@ -38,7 +38,7 @@ export const replaceIconCss = async ({ channel }) => {
       background-size: contain;
       animation: none;
     }`
-  browser.tabs.insertCSS({ code: css })
+  chrome.tabs.insertCSS({ code: css })
   set(id, css)
 }
 
@@ -46,7 +46,7 @@ export const replaceAvatorCss = async ({ ims, user }) => {
   const id = user.id
   const prev = await get(id)
   if (prev) {
-    browser.tabs.removeCSS({ code: prev })
+    chrome.tabs.removeCSS({ code: prev })
   }
   const css = `
     div#col_channels a.c-link.p-channel_sidebar__channel[href$="${ims.id}"] > span.p-channel_sidebar__name:before {
@@ -54,7 +54,7 @@ export const replaceAvatorCss = async ({ ims, user }) => {
       background-size: contain;
       animation: none;
     }`
-  browser.tabs.insertCSS({ code: css })
+  chrome.tabs.insertCSS({ code: css })
   set(id, css)
 }
 
@@ -62,7 +62,7 @@ export const replaceMultiMessageIconCss = async ({ mpims }) => {
   const id = mpims.id
   const prev = await get(id)
   if (prev) {
-    browser.tabs.removeCSS({ code: prev })
+    chrome.tabs.removeCSS({ code: prev })
   }
   const css = `
     div#col_channels a.c-link.p-channel_sidebar__channel[href$="${id}"] > span.p-channel_sidebar__name:before {
@@ -70,7 +70,7 @@ export const replaceMultiMessageIconCss = async ({ mpims }) => {
       background-size: contain;
       animation: none;
     }`
-  browser.tabs.insertCSS({ code: css })
+  chrome.tabs.insertCSS({ code: css })
   set(id, css)
 }
 
@@ -79,7 +79,7 @@ export const restoreCss = async () => {
   if (wholeCss) {
     // insert one by one for enable to removeCss()
     for (const css of Object.values(wholeCss)) {
-      browser.tabs.insertCSS({ code: css })
+      chrome.tabs.insertCSS({ code: css })
     }
   }
 }

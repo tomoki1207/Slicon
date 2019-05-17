@@ -4,7 +4,7 @@ import { restoreCss, replaceIconCss, replaceAvatorCss, replaceMultiMessageIconCs
 
 // listen onBeforeRequest
 const listen = (detail, callback) => {
-  const filter = browser.webRequest.filterResponseData(detail.requestId)
+  const filter = chrome.webRequest.filterResponseData(detail.requestId)
   const decoder = new TextDecoder('utf-8')
   const url = new URL(detail.url)
   const data = detail.requestBody.formData
@@ -67,7 +67,7 @@ const updateChannel = detail => {
 }
 
 // peek request contains channels list
-browser.webRequest.onBeforeRequest.addListener(
+chrome.webRequest.onBeforeRequest.addListener(
   initializeAllChannels,
   {
     urls: ['https://*.slack.com/api/client.counts*', 'https://*.slack.com/api/users.counts*']
@@ -75,7 +75,7 @@ browser.webRequest.onBeforeRequest.addListener(
   ['blocking', 'requestBody']
 )
 // update icon when set purpose immediately
-browser.webRequest.onBeforeRequest.addListener(
+chrome.webRequest.onBeforeRequest.addListener(
   updateChannelPurpose,
   {
     urls: ['https://*.slack.com/api/conversations.setPurpose*']
@@ -83,7 +83,7 @@ browser.webRequest.onBeforeRequest.addListener(
   ['blocking', 'requestBody']
 )
 // update icon when show/preview channel
-browser.webRequest.onBeforeRequest.addListener(
+chrome.webRequest.onBeforeRequest.addListener(
   updateChannel,
   {
     urls: ['https://*.slack.com/api/conversations.history*']
@@ -91,7 +91,7 @@ browser.webRequest.onBeforeRequest.addListener(
   ['blocking', 'requestBody']
 )
 
-browser.runtime.onMessage.addListener(async msg => {
+chrome.runtime.onMessage.addListener(async msg => {
   // initialize css on receive message from content_script
   if (msg.action === 'restore') {
     await restoreCss()

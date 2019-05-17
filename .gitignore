@@ -84,5 +84,5 @@ typings/
 .dynamodb/
 
 # Other build output
-.build/
+build-*/
 web-ext-artifacts/

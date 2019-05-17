@@ -7,13 +7,14 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "predev": "webpack",
+    "predev": "webpack --config webpack.firefox.config.js",
     "dev": "run-p watch:*",
-    "watch:js": "webpack -w",
-    "watch:ff": "web-ext run -s .build/",
+    "watch:js": "webpack -w --config webpack.firefox.config.js",
+    "watch:ff": "web-ext run -s build-firefox/",
     "build": "run-s build:js build:ff",
-    "build:js": "NODE_ENV=production webpack",
-    "build:ff": "web-ext build -s .build/ --overwrite-dest"
+    "build:js": "NODE_ENV=production webpack --config webpack.firefox.config.js",
+    "build:ff": "web-ext build -s build-firefox/ --overwrite-dest",
+    "build-chrome": "NODE_ENV=production webpack --config webpack.chrome.config.js"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",

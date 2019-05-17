@@ -1,0 +1,13 @@
+{
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "slicon@tomoki1207.jp",
+      "strict_min_version": "57.0"
+    }
+  },
+  "icons": {
+    "128": "icon.svg",
+    "48": "icon.svg",
+    "16": "icon.svg"
+  }
+}

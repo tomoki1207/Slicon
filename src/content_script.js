@@ -18,4 +18,4 @@ const waitForReady = selector =>
   })
 
 // request restore once when appear channel sidebar
-waitForReady('div.p-channel_sidebar__static_list').then(target => browser.runtime.sendMessage({ action: 'restore' }))
+waitForReady('div.p-channel_sidebar__static_list').then(target => chrome.runtime.sendMessage({ action: 'restore' }))

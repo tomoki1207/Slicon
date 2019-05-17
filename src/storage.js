@@ -3,12 +3,12 @@
  */
 
 export const get = async key => {
-  const val = await browser.storage.local.get(key)
+  const val = await chrome.storage.local.get(key)
   return key ? val[key] : val
 }
 
 export const set = async (key, value) => {
   const val = (await get()) || {}
   val[key] = value
-  return browser.storage.local.set(val)
+  return chrome.storage.local.set(val)
 }

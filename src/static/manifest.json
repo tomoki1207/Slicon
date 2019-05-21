@@ -7,9 +7,6 @@
     "matches": [
       "https://*.slack.com/*"
     ],
-    "js": [
-      "content_script.js"
-    ],
     "css": [
       "main.css"
     ],

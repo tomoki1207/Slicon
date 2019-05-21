@@ -1,7 +1,6 @@
 {
   "browser_specific_settings": {
     "gecko": {
-      "id": "slicon@tomoki1207.jp",
       "strict_min_version": "57.0"
     }
   },

@@ -10,7 +10,6 @@ module.exports = {
   target: 'web',
   node: false,
   entry: {
-    content_script: './src/content_script.js',
     background: './src/background.js'
   },
   module: {

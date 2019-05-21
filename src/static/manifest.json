@@ -19,8 +19,6 @@
     "https://*.slack.com/*",
     "webRequest",
     "activeTab",
-    "tabs",
-    "storage",
-    "notifications"
+    "tabs"
   ]
 }

@@ -1,8 +1,6 @@
 import md5 from 'blueimp-md5'
 import Identicon from 'identicon.js'
 
-import { get, set } from './storage'
-
 // icon format: __icon[https://your.icon.host/someimage.png]
 const iconRegex = /^__icon\[<(.+)>\]$/
 
@@ -27,10 +25,6 @@ const findIconUrl = channel => {
 
 export const replaceIconCss = async (tabId, { channel }) => {
   const id = channel.id
-  const prev = await get(id)
-  if (prev) {
-    chrome.tabs.removeCSS(tabId, { code: prev })
-  }
   const iconUrl = findIconUrl(channel) || generateDefaultIconUrl(channel)
   const css = `
     div#col_channels a.c-link.p-channel_sidebar__channel[href$="${id}"] > span.p-channel_sidebar__name:before {
@@ -39,15 +33,10 @@ export const replaceIconCss = async (tabId, { channel }) => {
       animation: none;
     }`
   chrome.tabs.insertCSS(tabId, { code: css })
-  set(id, css)
 }
 
 export const replaceAvatorCss = async (tabId, { im, user }) => {
   const id = user.id
-  const prev = await get(id)
-  if (prev) {
-    chrome.tabs.removeCSS(tabId, { code: prev })
-  }
   const css = `
     div#col_channels a.c-link.p-channel_sidebar__channel[href$="${im.id}"] > span.p-channel_sidebar__name:before {
       background: url(${user.profile.image_24}) no-repeat center center;
@@ -55,15 +44,10 @@ export const replaceAvatorCss = async (tabId, { im, user }) => {
       animation: none;
     }`
   chrome.tabs.insertCSS(tabId, { code: css })
-  set(id, css)
 }
 
 export const replaceMultiMessageIconCss = async (tabId, { mpim }) => {
   const id = mpim.id
-  const prev = await get(id)
-  if (prev) {
-    chrome.tabs.removeCSS(tabId, { code: prev })
-  }
   const css = `
     div#col_channels a.c-link.p-channel_sidebar__channel[href$="${id}"] > span.p-channel_sidebar__name:before {
       background: url(${generateDefaultIconUrl(mpim)}) no-repeat center center;
@@ -71,5 +55,4 @@ export const replaceMultiMessageIconCss = async (tabId, { mpim }) => {
       animation: none;
     }`
   chrome.tabs.insertCSS(tabId, { code: css })
-  set(id, css)
 }

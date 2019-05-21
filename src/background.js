@@ -3,41 +3,42 @@ import { fetchConversations, fetchConversation, fetchProfileAsConversation, fetc
 import { restoreCss, replaceIconCss, replaceAvatorCss, replaceMultiMessageIconCss } from './icon'
 
 const parse = (detail, callback) => {
+  const tabId = detail.tabId
   const url = new URL(detail.url)
   const data = detail.requestBody.formData
-  callback({ url, data })
+  callback({ tabId, url, data })
 }
 
 const initializeAllChannels = detail => {
-  parse(detail, async ({ url, data }) => {
+  parse(detail, async ({ tabId, url, data }) => {
     const { channels, ims, mpims } = await fetchConversations(url.origin, data.token)
-    channels.forEach(channel => replaceIconCss({ channel }))
+    channels.forEach(channel => replaceIconCss(tabId, { channel }))
     ims.forEach(async im => {
       const profile = await fetchProfile(im, url.origin, data.token)
-      replaceAvatorCss(profile)
+      replaceAvatorCss(tabId, profile)
     })
-    mpims.forEach(mpim => replaceMultiMessageIconCss({ mpim }))
+    mpims.forEach(mpim => replaceMultiMessageIconCss(tabId, { mpim }))
   })
 }
 
 const updateChannelPurpose = detail => {
-  parse(detail, async ({ url, data }) => {
+  parse(detail, async ({ tabId, url, data }) => {
     // wait for complete request
     await trivialSleep(1000)
     const channel = await fetchConversation({ id: data.channel }, url.origin, data.token)
-    replaceIconCss(channel)
+    replaceIconCss(tabId, channel)
   })
 }
 
 const updateChannel = detail => {
-  parse(detail, async ({ url, data }) => {
+  parse(detail, async ({ tabId, url, data }) => {
     const { channel } = await fetchConversation({ id: data.channel }, url.origin, data.token)
     if (!channel.is_im) {
-      replaceIconCss({ channel })
+      replaceIconCss(tabId, { channel })
       return
     }
     const profile = await fetchProfile(channel, url.origin, data.token)
-    replaceAvatorCss(profile)
+    replaceAvatorCss(tabId, profile)
   })
 }
 
@@ -65,10 +66,3 @@ chrome.webRequest.onBeforeRequest.addListener(
   },
   ['requestBody']
 )
-
-chrome.runtime.onMessage.addListener(async msg => {
-  // initialize css on receive message from content_script
-  if (msg.action === 'restore') {
-    await restoreCss()
-  }
-})

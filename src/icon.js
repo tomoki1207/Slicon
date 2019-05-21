@@ -25,11 +25,11 @@ const findIconUrl = channel => {
   return null
 }
 
-export const replaceIconCss = async ({ channel }) => {
+export const replaceIconCss = async (tabId, { channel }) => {
   const id = channel.id
   const prev = await get(id)
   if (prev) {
-    chrome.tabs.removeCSS({ code: prev })
+    chrome.tabs.removeCSS(tabId, { code: prev })
   }
   const iconUrl = findIconUrl(channel) || generateDefaultIconUrl(channel)
   const css = `
@@ -38,15 +38,15 @@ export const replaceIconCss = async ({ channel }) => {
       background-size: contain;
       animation: none;
     }`
-  chrome.tabs.insertCSS({ code: css })
+  chrome.tabs.insertCSS(tabId, { code: css })
   set(id, css)
 }
 
-export const replaceAvatorCss = async ({ im, user }) => {
+export const replaceAvatorCss = async (tabId, { im, user }) => {
   const id = user.id
   const prev = await get(id)
   if (prev) {
-    chrome.tabs.removeCSS({ code: prev })
+    chrome.tabs.removeCSS(tabId, { code: prev })
   }
   const css = `
     div#col_channels a.c-link.p-channel_sidebar__channel[href$="${im.id}"] > span.p-channel_sidebar__name:before {
@@ -54,15 +54,15 @@ export const replaceAvatorCss = async ({ im, user }) => {
       background-size: contain;
       animation: none;
     }`
-  chrome.tabs.insertCSS({ code: css })
+  chrome.tabs.insertCSS(tabId, { code: css })
   set(id, css)
 }
 
-export const replaceMultiMessageIconCss = async ({ mpim }) => {
+export const replaceMultiMessageIconCss = async (tabId, { mpim }) => {
   const id = mpim.id
   const prev = await get(id)
   if (prev) {
-    chrome.tabs.removeCSS({ code: prev })
+    chrome.tabs.removeCSS(tabId, { code: prev })
   }
   const css = `
     div#col_channels a.c-link.p-channel_sidebar__channel[href$="${id}"] > span.p-channel_sidebar__name:before {
@@ -70,16 +70,6 @@ export const replaceMultiMessageIconCss = async ({ mpim }) => {
       background-size: contain;
       animation: none;
     }`
-  chrome.tabs.insertCSS({ code: css })
+  chrome.tabs.insertCSS(tabId, { code: css })
   set(id, css)
-}
-
-export const restoreCss = async () => {
-  const wholeCss = await get()
-  if (wholeCss) {
-    // insert one by one for enable to removeCss()
-    for (const css of Object.values(wholeCss)) {
-      chrome.tabs.insertCSS({ code: css })
-    }
-  }
 }

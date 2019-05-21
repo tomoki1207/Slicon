@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Slicon",
   "description": "Set icon to your slack channel, and make more accessible for your favorite channel!",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "content_scripts": [{
     "matches": [
       "https://*.slack.com/*"

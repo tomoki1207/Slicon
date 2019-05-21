@@ -1,5 +1,5 @@
 // simulate sleep
-const trivialSleep = ms =>
+export const trivialSleep = ms =>
   new Promise(resolve => {
     setTimeout(() => {
       resolve()

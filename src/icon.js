@@ -42,14 +42,14 @@ export const replaceIconCss = async ({ channel }) => {
   set(id, css)
 }
 
-export const replaceAvatorCss = async ({ ims, user }) => {
+export const replaceAvatorCss = async ({ im, user }) => {
   const id = user.id
   const prev = await get(id)
   if (prev) {
     chrome.tabs.removeCSS({ code: prev })
   }
   const css = `
-    div#col_channels a.c-link.p-channel_sidebar__channel[href$="${ims.id}"] > span.p-channel_sidebar__name:before {
+    div#col_channels a.c-link.p-channel_sidebar__channel[href$="${im.id}"] > span.p-channel_sidebar__name:before {
       background: url(${user.profile.image_24}) no-repeat center center;
       background-size: contain;
       animation: none;
@@ -58,15 +58,15 @@ export const replaceAvatorCss = async ({ ims, user }) => {
   set(id, css)
 }
 
-export const replaceMultiMessageIconCss = async ({ mpims }) => {
-  const id = mpims.id
+export const replaceMultiMessageIconCss = async ({ mpim }) => {
+  const id = mpim.id
   const prev = await get(id)
   if (prev) {
     chrome.tabs.removeCSS({ code: prev })
   }
   const css = `
     div#col_channels a.c-link.p-channel_sidebar__channel[href$="${id}"] > span.p-channel_sidebar__name:before {
-      background: url(${generateDefaultIconUrl(mpims)}) no-repeat center center;
+      background: url(${generateDefaultIconUrl(mpim)}) no-repeat center center;
       background-size: contain;
       animation: none;
     }`

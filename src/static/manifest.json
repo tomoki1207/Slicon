@@ -21,7 +21,6 @@
   "permissions": [
     "https://*.slack.com/*",
     "webRequest",
-    "webRequestBlocking",
     "activeTab",
     "tabs",
     "storage",

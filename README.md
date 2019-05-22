@@ -1,9 +1,13 @@
-Channelicon
+Channelicon - Browser extension for Slack
 ===
 
-Better your slack channel.
+Slicon enables setting icon to your slack channels, and it makes easier to access your favorite channels.  
+Icon made by channel purpose or name, so it is shared with members using this extension.
 
-![screenshot](https://user-images.githubusercontent.com/3643499/57746264-6be49980-770b-11e9-886c-bee8ca342f9a.png)
++ Firefox https://addons.mozilla.org/en-US/firefox/addon/slicon/
++ Chrome https://chrome.google.com/webstore/detail/slicon/ngpdjiifhboeigkafinflcicbekcggao
+
+<img width="640" alt="screenshot" src="https://user-images.githubusercontent.com/3643499/58146223-1de20f80-7c90-11e9-9798-f19168753d2f.png">
 
 ### Channel icon
 
@@ -17,9 +21,3 @@ Better your slack channel.
 + Shown user's/app's avator as icon.
 + On multiparty direct message, shown identicon as icon. (can't change now)
 
-### For paranoids (like me)
-
-#### Why this extension needs stongly permissions?
-It needs permissions about "webRequest".
-This is for only recycle slack-api token for retrive channel info.
-See source code to check that extension return intercepted response without any changes.
